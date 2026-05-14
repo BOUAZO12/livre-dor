@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Livre d'or</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #f5f5f5; color: #333; padding: 2rem 1rem; }
+    .container { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+    .subtitle { color: #777; margin-bottom: 2rem; }
+    form { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #e0e0e0; }
+    form h2 { margin-bottom: 1rem; font-size: 1.1rem; }
+    input, textarea { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; margin-bottom: 0.75rem; font-family: inherit; }
+    textarea { resize: vertical; min-height: 100px; }
+    button[type=submit] { background: #4f46e5; color: white; border: none; padding: 0.65rem 1.5rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+    button[type=submit]:hover { background: #4338ca; }
+    .message-card { background: white; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; border: 1px solid #e0e0e0; }
+    .message-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+    .message-nom { font-weight: 600; font-size: 1rem; }
+    .message-date { font-size: 0.8rem; color: #999; }
+    .message-texte { color: #444; line-height: 1.6; }
+    .delete-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1.1rem; padding: 0 0.25rem; }
+    .delete-btn:hover { color: #e53e3e; }
+    .empty { text-align: center; color: #aaa; padding: 2rem 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📖 Livre d'or</h1>
+    <p class="subtitle">Laissez un message pour les visiteurs suivants.</p>
+
+    <form action="/add" method="POST">
+      <h2>Signer le livre</h2>
+      <input type="text" name="nom" placeholder="Votre nom" required maxlength="100">
+      <textarea name="message" placeholder="Votre message..." required maxlength="1000"></textarea>
+      <button type="submit">Publier</button>
+    </form>
+
+    {% if messages %}
+      {% for msg in messages %}
+      <div class="message-card">
+        <div class="message-header">
+          <span class="message-nom">{{ msg.nom }}</span>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span class="message-date">{{ msg.date.strftime('%d/%m/%Y à %H:%M') }}</span>
+            <form action="/delete/{{ msg.id }}" method="POST" style="display:inline">
+              <button class="delete-btn" type="submit" title="Supprimer">✕</button>
+            </form>
+          </div>
+        </div>
+        <p class="message-texte">{{ msg.message }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty">Aucun message pour l'instant. Soyez le premier !</p>
+    {% endif %}
+  </div>
+</body>
+</html>
+
